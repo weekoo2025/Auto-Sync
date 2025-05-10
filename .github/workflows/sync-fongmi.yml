@@ -31,26 +31,24 @@ jobs:
           cp -rf temp_repo/apk/* "Tvbox/App/Ok影视/"
           
           # 创建 README.md 文件
-          cat > "Tvbox/App/Ok影视/README.md" << 'EOL'
-# Ok影视 版本说明
-
-## 版本类型
-- mobile = 手機版
-- leanback = 電視版
-
-## 爬蟲類型
-- java = jar + js 爬蟲
-- python = jar + js + py 爬蟲
-
-## 系統架構
-- arm64_v8a = 64 位元
-- armeabi_v7a = 32 位元
-
-## 發布類型
-- dev = 內測版
-- kitkat = 4.x 版
-- release = 正式版
-EOL
+          echo "# Ok影视 版本说明" > "Tvbox/App/Ok影视/README.md"
+          echo "" >> "Tvbox/App/Ok影视/README.md"
+          echo "## 版本类型" >> "Tvbox/App/Ok影视/README.md"
+          echo "- mobile = 手機版" >> "Tvbox/App/Ok影视/README.md"
+          echo "- leanback = 電視版" >> "Tvbox/App/Ok影视/README.md"
+          echo "" >> "Tvbox/App/Ok影视/README.md"
+          echo "## 爬蟲類型" >> "Tvbox/App/Ok影视/README.md"
+          echo "- java = jar + js 爬蟲" >> "Tvbox/App/Ok影视/README.md"
+          echo "- python = jar + js + py 爬蟲" >> "Tvbox/App/Ok影视/README.md"
+          echo "" >> "Tvbox/App/Ok影视/README.md"
+          echo "## 系統架構" >> "Tvbox/App/Ok影视/README.md"
+          echo "- arm64_v8a = 64 位元" >> "Tvbox/App/Ok影视/README.md"
+          echo "- armeabi_v7a = 32 位元" >> "Tvbox/App/Ok影视/README.md"
+          echo "" >> "Tvbox/App/Ok影视/README.md"
+          echo "## 發布類型" >> "Tvbox/App/Ok影视/README.md"
+          echo "- dev = 內測版" >> "Tvbox/App/Ok影视/README.md"
+          echo "- kitkat = 4.x 版" >> "Tvbox/App/Ok影视/README.md"
+          echo "- release = 正式版" >> "Tvbox/App/Ok影视/README.md"
           
           # 保存提交信息到环境变量
           echo "COMMIT_MSG=$LAST_COMMIT_MSG" >> $GITHUB_ENV
