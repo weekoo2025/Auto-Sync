@@ -1,0 +1,59 @@
+name: Sync Tushen Tomorrow
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # 每6小时运行一次
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+        
+      - name: 创建目标目录
+        run: |
+          mkdir -p "Tvbox/DataSource"
+          
+      - name: 同步 Tomorrow 仓库
+        run: |
+          # 克隆源仓库
+          git clone --depth 1 https://github.com/tushen6/Tomorrow.git temp_repo
+          
+          # 获取最后一次提交信息
+          cd temp_repo
+          LAST_COMMIT_MSG=$(git log -1 --pretty=format:"%s")
+          LAST_COMMIT_HASH=$(git log -1 --pretty=format:"%h")
+          cd ..
+          
+          # 复制所有文件到目标目录
+          cp -rf temp_repo/* "Tvbox/DataSource/"
+          
+          # 在目标目录中添加标注文件
+          echo "# 这是多仓配置文件" > "Tvbox/DataSource/lmw.json.info"
+          echo "# 这是单仓配置文件" > "Tvbox/DataSource/lzxw.json.info"
+          
+          # 保存提交信息到环境变量
+          echo "COMMIT_MSG=$LAST_COMMIT_MSG" >> $GITHUB_ENV
+          echo "COMMIT_HASH=$LAST_COMMIT_HASH" >> $GITHUB_ENV
+          
+          # 清理临时文件
+          rm -rf temp_repo
+          
+      - name: 检查是否有更改
+        id: check_changes
+        run: |
+          git add .
+          git status --porcelain
+          echo "changes=$(git status --porcelain | wc -l)" >> $GITHUB_OUTPUT
+          
+      - name: 提交更改
+        if: steps.check_changes.outputs.changes > 0
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "自动同步: Tomorrow 仓库更新 | 源仓库提交信息: ${{ env.COMMIT_MSG }} | 源仓库提交Hash: ${{ env.COMMIT_HASH }}"
+          git push 
