@@ -22,8 +22,18 @@ jobs:
           # 克隆源仓库的特定分支和目录
           git clone --depth 1 --branch okjack --single-branch https://github.com/FongMi/Release.git temp_repo
           
+          # 获取最后一次提交信息
+          cd temp_repo
+          LAST_COMMIT_MSG=$(git log -1 --pretty=format:"%s")
+          LAST_COMMIT_HASH=$(git log -1 --pretty=format:"%h")
+          cd ..
+          
           # 复制 apk 目录内容到目标目录
           cp -rf temp_repo/apk/* "Tvbox/Ok影视/"
+          
+          # 保存提交信息到环境变量
+          echo "COMMIT_MSG=$LAST_COMMIT_MSG" >> $GITHUB_ENV
+          echo "COMMIT_HASH=$LAST_COMMIT_HASH" >> $GITHUB_ENV
           
           # 清理临时文件
           rm -rf temp_repo
@@ -41,5 +51,8 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add .
-          git commit -m "自动同步: FongMi Release 更新"
+          git commit -m "自动同步: FongMi Release 更新
+
+源仓库提交信息: ${{ env.COMMIT_MSG }}
+源仓库提交Hash: ${{ env.COMMIT_HASH }}"
           git push 
