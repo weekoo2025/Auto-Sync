@@ -33,7 +33,21 @@ jobs:
           # 创建 README.md 文件
           echo "# Ok影视 版本说明" > "Tvbox/App/Ok影视/README.md"
           echo "" >> "Tvbox/App/Ok影视/README.md"
-          echo "## 版本类型" >> "Tvbox/App/Ok影视/README.md"
+          echo "## 当前版本" >> "Tvbox/App/Ok影视/README.md"
+          echo "" >> "Tvbox/App/Ok影视/README.md"
+          
+          # 获取目录中的文件列表并生成版本信息
+          cd "Tvbox/App/Ok影视"
+          for file in *.apk; do
+            if [ -f "$file" ]; then
+              echo "- $file" >> "README.md"
+            fi
+          done
+          cd ../../..
+          
+          # 添加版本说明
+          echo "" >> "Tvbox/App/Ok影视/README.md"
+          echo "## 版本说明" >> "Tvbox/App/Ok影视/README.md"
           echo "- mobile = 手機版" >> "Tvbox/App/Ok影视/README.md"
           echo "- leanback = 電視版" >> "Tvbox/App/Ok影视/README.md"
           echo "" >> "Tvbox/App/Ok影视/README.md"
