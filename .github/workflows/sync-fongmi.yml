@@ -22,6 +22,16 @@ jobs:
           # 克隆源仓库的特定分支和目录
           git clone --depth 1 --branch okjack --single-branch https://github.com/FongMi/Release.git temp_repo
           
+          # 获取每个文件的最后提交信息
+          cd temp_repo
+          for file in apk/*; do
+            if [ -f "$file" ]; then
+              COMMIT_MSG=$(git log -1 --pretty=format:"%s" -- "$file")
+              echo "$file: $COMMIT_MSG" >> ../commit_msgs.txt
+            fi
+          done
+          cd ..
+          
           # 复制 apk 目录内容到目标目录
           cp -rf temp_repo/apk/* "Tvbox/App/Ok影视/"
           
@@ -44,16 +54,6 @@ jobs:
           echo "- dev = 內測版" >> "Tvbox/App/Ok影视/README.md"
           echo "- kitkat = 4.x 版" >> "Tvbox/App/Ok影视/README.md"
           echo "- release = 正式版" >> "Tvbox/App/Ok影视/README.md"
-          
-          # 获取每个文件的最后提交信息
-          cd temp_repo
-          for file in apk/*; do
-            if [ -f "$file" ]; then
-              COMMIT_MSG=$(git log -1 --pretty=format:"%s" -- "$file")
-              echo "$file: $COMMIT_MSG" >> ../commit_msgs.txt
-            fi
-          done
-          cd ..
           
           # 清理临时文件
           rm -rf temp_repo
