@@ -15,7 +15,7 @@ jobs:
         
       - name: 创建目标目录
         run: |
-          mkdir -p "Tvbox/Ok影视"
+          mkdir -p "Tvbox/App/Ok影视"
           
       - name: 同步 FongMi Release 仓库
         run: |
@@ -25,15 +25,35 @@ jobs:
           # 获取最后一次提交信息
           cd temp_repo
           LAST_COMMIT_MSG=$(git log -1 --pretty=format:"%s")
-          LAST_COMMIT_HASH=$(git log -1 --pretty=format:"%h")
           cd ..
           
           # 复制 apk 目录内容到目标目录
-          cp -rf temp_repo/apk/* "Tvbox/Ok影视/"
+          cp -rf temp_repo/apk/* "Tvbox/App/Ok影视/"
+          
+          # 创建 README.md 文件
+          cat > "Tvbox/App/Ok影视/README.md" << 'EOL'
+# Ok影视 版本说明
+
+## 版本类型
+- mobile = 手機版
+- leanback = 電視版
+
+## 爬蟲類型
+- java = jar + js 爬蟲
+- python = jar + js + py 爬蟲
+
+## 系統架構
+- arm64_v8a = 64 位元
+- armeabi_v7a = 32 位元
+
+## 發布類型
+- dev = 內測版
+- kitkat = 4.x 版
+- release = 正式版
+EOL
           
           # 保存提交信息到环境变量
           echo "COMMIT_MSG=$LAST_COMMIT_MSG" >> $GITHUB_ENV
-          echo "COMMIT_HASH=$LAST_COMMIT_HASH" >> $GITHUB_ENV
           
           # 清理临时文件
           rm -rf temp_repo
@@ -51,5 +71,5 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add .
-          git commit -m "自动同步: FongMi Release 更新 | 源仓库提交信息: ${{ env.COMMIT_MSG }} | 源仓库提交Hash: ${{ env.COMMIT_HASH }}"
-          git push 
+          git commit -m "${{ env.COMMIT_MSG }}"
+          git push
