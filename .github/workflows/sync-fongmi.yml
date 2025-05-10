@@ -12,7 +12,9 @@ jobs:
     steps:
       - name: 检出代码
         uses: actions/checkout@v4
-        
+        with:
+          fetch-depth: 0  # 获取完整历史
+          
       - name: 创建目标目录
         run: |
           mkdir -p "Tvbox/App/Ok影视"
@@ -60,6 +62,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+          git pull --rebase  # 先拉取并变基
           git add .
           git commit -m "更新 Ok影视 版本"
           git push
