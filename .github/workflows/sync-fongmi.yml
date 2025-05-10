@@ -22,32 +22,13 @@ jobs:
           # 克隆源仓库的特定分支和目录
           git clone --depth 1 --branch okjack --single-branch https://github.com/FongMi/Release.git temp_repo
           
-          # 获取最后一次提交信息
-          cd temp_repo
-          LAST_COMMIT_MSG=$(git log -1 --pretty=format:"%s")
-          cd ..
-          
           # 复制 apk 目录内容到目标目录
           cp -rf temp_repo/apk/* "Tvbox/App/Ok影视/"
           
           # 创建 README.md 文件
           echo "# Ok影视 版本说明" > "Tvbox/App/Ok影视/README.md"
           echo "" >> "Tvbox/App/Ok影视/README.md"
-          echo "## 当前版本" >> "Tvbox/App/Ok影视/README.md"
-          echo "" >> "Tvbox/App/Ok影视/README.md"
-          
-          # 获取目录中的文件列表并生成版本信息
-          cd "Tvbox/App/Ok影视"
-          for file in *.apk; do
-            if [ -f "$file" ]; then
-              echo "- $file" >> "README.md"
-            fi
-          done
-          cd ../../..
-          
-          # 添加版本说明
-          echo "" >> "Tvbox/App/Ok影视/README.md"
-          echo "## 版本说明" >> "Tvbox/App/Ok影视/README.md"
+          echo "## 版本类型" >> "Tvbox/App/Ok影视/README.md"
           echo "- mobile = 手機版" >> "Tvbox/App/Ok影视/README.md"
           echo "- leanback = 電視版" >> "Tvbox/App/Ok影视/README.md"
           echo "" >> "Tvbox/App/Ok影视/README.md"
@@ -63,9 +44,6 @@ jobs:
           echo "- dev = 內測版" >> "Tvbox/App/Ok影视/README.md"
           echo "- kitkat = 4.x 版" >> "Tvbox/App/Ok影视/README.md"
           echo "- release = 正式版" >> "Tvbox/App/Ok影视/README.md"
-          
-          # 保存提交信息到环境变量
-          echo "COMMIT_MSG=$LAST_COMMIT_MSG" >> $GITHUB_ENV
           
           # 清理临时文件
           rm -rf temp_repo
@@ -83,5 +61,5 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add .
-          git commit -m "${{ env.COMMIT_MSG }}"
+          git commit -m "更新 Ok影视 版本"
           git push
