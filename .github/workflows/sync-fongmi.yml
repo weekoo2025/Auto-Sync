@@ -19,8 +19,8 @@ jobs:
           
       - name: 同步 FongMi Release 仓库
         run: |
-          # 克隆源仓库的特定分支和目录
-          git clone --depth 1 --branch okjack --single-branch https://github.com/FongMi/Release.git temp_repo
+          # 克隆源仓库的特定分支和目录（获取完整历史）
+          git clone --branch okjack --single-branch https://github.com/FongMi/Release.git temp_repo
           
           # 获取每个目录和文件的最后提交信息
           cd temp_repo
