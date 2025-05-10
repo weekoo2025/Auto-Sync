@@ -1,0 +1,3 @@
+apk/dev.bat: 2.8.8
+apk/kitkat.bat: 2.8.8
+apk/release.bat: 2.8.8
