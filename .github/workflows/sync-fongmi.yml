@@ -51,8 +51,5 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add .
-          git commit -m "自动同步: FongMi Release 更新
-
-源仓库提交信息: ${{ env.COMMIT_MSG }}
-源仓库提交Hash: ${{ env.COMMIT_HASH }}"
+          git commit -m "自动同步: FongMi Release 更新 | 源仓库提交信息: ${{ env.COMMIT_MSG }} | 源仓库提交Hash: ${{ env.COMMIT_HASH }}"
           git push 
