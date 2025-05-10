@@ -22,18 +22,27 @@ jobs:
           # 克隆源仓库的特定分支和目录
           git clone --depth 1 --branch okjack --single-branch https://github.com/FongMi/Release.git temp_repo
           
-          # 获取最后一次提交信息
+          # 进入临时仓库目录
           cd temp_repo
-          LAST_COMMIT_MSG=$(git log -1 --pretty=format:"%s")
-          LAST_COMMIT_HASH=$(git log -1 --pretty=format:"%h")
+          
+          # 复制文件并记录每个文件的提交信息
+          for file in apk/*; do
+            if [ -f "$file" ]; then
+              commit_msg=$(git log -1 --pretty=format:"%s" -- "$file")
+              commit_hash=$(git log -1 --pretty=format:"%h" -- "$file")
+              commit_date=$(git log -1 --pretty=format:"%ai" -- "$file")
+              echo "同步文件: $file"
+              echo "提交信息: $commit_msg"
+              echo "提交哈希: $commit_hash"
+              echo "提交日期: $commit_date"
+              echo "------------------------"
+            fi
+          done
+          
           cd ..
           
           # 复制 apk 目录内容到目标目录
           cp -rf temp_repo/apk/* "Tvbox/Apk/Ok影视"
-          
-          # 保存提交信息到环境变量
-          echo "COMMIT_MSG=$LAST_COMMIT_MSG" >> $GITHUB_ENV
-          echo "COMMIT_HASH=$LAST_COMMIT_HASH" >> $GITHUB_ENV
           
           # 清理临时文件
           rm -rf temp_repo
@@ -51,5 +60,5 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add .
-          git commit -m "${{ env.COMMIT_MSG }}"
+          git commit -m "同步 FongMi Release 更新"
           git push 
