@@ -22,12 +22,21 @@ jobs:
           # 克隆源仓库的特定分支和目录
           git clone --depth 1 --branch okjack --single-branch https://github.com/FongMi/Release.git temp_repo
           
-          # 获取每个文件的最后提交信息
+          # 获取每个目录和文件的最后提交信息
           cd temp_repo
-          for file in apk/*; do
+          for dir in apk/*; do
+            if [ -d "$dir" ]; then
+              COMMIT_MSG=$(git log -1 --pretty=format:"%s" -- "$dir")
+              COMMIT_DATE=$(git log -1 --pretty=format:"%ad" -- "$dir")
+              echo "$dir: $COMMIT_MSG ($COMMIT_DATE)" >> ../commit_msgs.txt
+            fi
+          done
+          
+          for file in apk/*.bat; do
             if [ -f "$file" ]; then
               COMMIT_MSG=$(git log -1 --pretty=format:"%s" -- "$file")
-              echo "$file: $COMMIT_MSG" >> ../commit_msgs.txt
+              COMMIT_DATE=$(git log -1 --pretty=format:"%ad" -- "$file")
+              echo "$file: $COMMIT_MSG ($COMMIT_DATE)" >> ../commit_msgs.txt
             fi
           done
           cd ..
@@ -71,7 +80,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add .
-          # 使用第一个文件的提交信息作为提交信息
-          COMMIT_MSG=$(head -n 1 commit_msgs.txt | cut -d ':' -f 2-)
+          # 使用 release 目录的提交信息作为提交信息
+          COMMIT_MSG=$(grep "apk/release:" commit_msgs.txt | cut -d ':' -f 2-)
           git commit -m "$COMMIT_MSG"
           git push
