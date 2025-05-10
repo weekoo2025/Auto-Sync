@@ -15,7 +15,7 @@ jobs:
         
       - name: 创建目标目录
         run: |
-          mkdir -p "Tvbox/DataSource"
+          mkdir -p "Tvbox/DataSource/DataA"
           
       - name: 同步 Tomorrow 仓库
         run: |
@@ -29,11 +29,22 @@ jobs:
           cd ..
           
           # 复制所有文件到目标目录
-          cp -rf temp_repo/* "Tvbox/DataSource/"
+          cp -rf temp_repo/* "Tvbox/DataSource/DataA/"
           
           # 在目标目录中添加标注文件
-          echo "# 这是多仓配置文件" > "Tvbox/DataSource/lmw.json.info"
-          echo "# 这是单仓配置文件" > "Tvbox/DataSource/lzxw.json.info"
+          echo "# 这是多仓配置文件" > "Tvbox/DataSource/DataA/lmw.json.info"
+          echo "# 这是单仓配置文件" > "Tvbox/DataSource/DataA/lzxw.json.info"
+          
+          # 修改 README.md 中的订阅地址
+          if [ -f "Tvbox/DataSource/DataA/README.md" ]; then
+            # 获取当前仓库信息
+            REPO_OWNER=$(echo $GITHUB_REPOSITORY | cut -d '/' -f 1)
+            REPO_NAME=$(echo $GITHUB_REPOSITORY | cut -d '/' -f 2)
+            
+            # 替换订阅地址
+            sed -i "s|https://github\.moeyy\.xyz/https://raw\.githubusercontent\.com/tushen6/Tomorrow/master/lmw\.json|https://github.moeyy.xyz/https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/master/Tvbox/DataSource/DataA/lmw.json|g" "Tvbox/DataSource/DataA/README.md"
+            sed -i "s|https://github\.moeyy\.xyz/https://raw\.githubusercontent\.com/tushen6/Tomorrow/master/lzxw\.json|https://github.moeyy.xyz/https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/master/Tvbox/DataSource/DataA/lzxw.json|g" "Tvbox/DataSource/DataA/README.md"
+          fi
           
           # 保存提交信息到环境变量
           echo "COMMIT_MSG=$LAST_COMMIT_MSG" >> $GITHUB_ENV
@@ -56,4 +67,4 @@ jobs:
           git config --local user.name "GitHub Action"
           git add .
           git commit -m "自动同步: Tomorrow 仓库更新 | 源仓库提交信息: ${{ env.COMMIT_MSG }} | 源仓库提交Hash: ${{ env.COMMIT_HASH }}"
-          git push 
+          git push
